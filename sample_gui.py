@@ -1,10 +1,8 @@
 import pygame
 from pygame.locals import *
-from pygame.math import Vector2
 from gui import GUI, TextBox, Label, Button
 from grid import Grid
 from physics import Physics
-import math
 
 
 pygame.init()
@@ -24,52 +22,70 @@ gui = GUI()
 
 gui.add_element(Label((w - 250, 48, 0, 40), 'V0 =', Color('black'), '2'))
 gui.add_element(Label((w - 57, 48, 0, 40), 'м/c', Color('black'), '3'))
-gui.add_element(TextBox((w - 190, 40, 130, 40), '0', name='6'))
+gui.add_element(TextBox((w - 190, 40, 130, 40), '0.0', name='6'))
 
 gui.add_element(Label((w - 237, 108, 0, 40), 'α =', Color('black'), '4'))
 gui.add_element(Label((w - 57, 108, 0, 40), '°', Color('black'), '5'))
-gui.add_element(TextBox((w - 190, 100, 130, 40), '0', name='7'))
+gui.add_element(TextBox((w - 190, 100, 130, 40), '0.0', name='7'))
 
 gui.add_element(Label((w - 247, 168, 0, 40), 'Δt =', Color('black'), '8'))
 gui.add_element(Label((w - 57, 168, 0, 40), 'с', Color('black'), '9'))
-gui.add_element(TextBox((w - 190, 160, 130, 40), '1', name='10'))
+gui.add_element(TextBox((w - 190, 160, 130, 40), '1.0', name='10'))
 
 gui.add_element(Label((w - 247, 228, 0, 40), 'Начальная точка:', Color('black'), '12'))
 gui.add_element(Label((w - 235, 268, 0, 40), 'x =', Color('black'), '13'))
 gui.add_element(Label((w - 235, 308, 0, 40), 'y =', Color('black'), '14'))
-gui.add_element(TextBox((w - 190, 264, 130, 35), '0', name='15'))
-gui.add_element(TextBox((w - 190, 304, 130, 35), '0', name='16'))
+gui.add_element(TextBox((w - 190, 264, 130, 35), '0.0', name='15'))
+gui.add_element(TextBox((w - 190, 304, 130, 35), '0.0', name='16'))
+
+
+gui.add_element(Label((w - 247, 348, 0, 40), 'Масштаб клетки:', Color('black'), '19'))
+gui.add_element(Label((w - 235, 388, 0, 40), 'x =', Color('black'), '20'))
+gui.add_element(Label((w - 235, 428, 0, 40), 'y =', Color('black'), '21'))
+gui.add_element(TextBox((w - 190, 384, 130, 35), '50', name='22'))
+gui.add_element(TextBox((w - 190, 424, 130, 35), '50', name='23'))
 
 
 def setup():
-    if not started:
-        try:
-            phys.v0 = float(gui.get_element('6').text)
-        except ValueError:
-            phys.v0 = 0
+    try:
+        phys.v0 = float(gui.get_element('6').text)
+    except ValueError:
+        phys.v0 = 0
 
-        try:
-            phys.angle = float(gui.get_element('7').text)
-        except ValueError:
-            phys.angle = 0
+    try:
+        phys.angle = float(gui.get_element('7').text)
+    except ValueError:
+        phys.angle = 0
 
-        try:
-            phys.deltatime = float(gui.get_element('10').text)
-        except ValueError:
-            phys.deltatime = 1
+    try:
+        phys.deltatime = float(gui.get_element('10').text)
+    except ValueError:
+        phys.deltatime = 1
 
-        try:
-            phys.p0.x = float(gui.get_element('15').text)
-        except ValueError:
-            phys.p0.x = 0
+    try:
+        phys.p0.x = float(gui.get_element('15').text)
+    except ValueError:
+        phys.p0.x = 0
 
-        try:
-            phys.p0.y = float(gui.get_element('16').text)
-        except ValueError:
-            phys.p0.y = 0
+    try:
+        phys.p0.y = float(gui.get_element('16').text)
+    except ValueError:
+        phys.p0.y = 0
 
-        phys.reset()
-        print('setup complete', phys)
+
+    try:
+        grid.number_scale = (int(gui.get_element('22').text), grid.number_scale[1])
+    except ValueError:
+        grid.number_scale = (50, grid.number_scale[1])
+
+    try:
+        grid.number_scale = (grid.number_scale[0], int(gui.get_element('23').text))
+    except ValueError:
+        grid.number_scale = (grid.number_scale[0], 50)
+
+    phys.reset()
+    reset()
+    print('setup complete', phys)
 
 
 gui.add_element(Button((w - 200, h - 60, 150, 40), 'Применить', Color('black'), func=setup, name='17'))
@@ -157,7 +173,6 @@ while True:
 
     grid.update()
     grid.render()
-    # grid.draw_line(Vector2(0, 100), Vector2(100, 100))
 
     screen.blit(surf, (20, 20))
 
