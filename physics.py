@@ -35,8 +35,13 @@ class Physics:
     def set_p0(self, p0: Vector2):
         self.p0 = p0
 
-    def update(self):
+    def update(self, fps=1):
         self.t += self.deltatime
 
     def reset(self):
         self.t = 0
+
+    def __str__(self):
+        return 'Physics(v0={}, p0={}, angle={}, delta={}, t={})'.format(
+            self.v0, self.p0, self.angle, self.deltatime, self.t
+        )

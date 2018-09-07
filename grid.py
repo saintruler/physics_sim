@@ -2,6 +2,12 @@ import pygame
 import sys
 
 
+class GridObject:
+    def __init__(self, surface: pygame.Surface, point: pygame.Vector2):
+        self.surface = surface
+        self.point = point
+
+
 class Grid:
     def __init__(self, surface, numbers_scale: tuple=(1, 1)):
         self.scaled = False
@@ -20,7 +26,8 @@ class Grid:
         self.font = pygame.font.SysFont('couriernew', self.font_size, bold=True)
 
         self._original_objects = {}
-        self._objects = {}
+        self.objects = {}
+        self._lines = []
 
     def new_hor_line(self, y_pos, width=1):
         w = pygame.display.get_surface().get_rect().width
@@ -59,25 +66,38 @@ class Grid:
         self.scaled = False
 
     def _scale_objects(self):
-        self._objects.clear()
-        for obj, point in self._original_objects.items():
-            width = int(obj.get_rect().width * (1 / self.scale))
-            height = int(obj.get_rect().height * (1 / self.scale))
+        self.objects.clear()
+        for name, obj in self._original_objects.items():
+            width = int(obj.surface.get_rect().width * (1 / self.scale))
+            height = int(obj.surface.get_rect().height * (1 / self.scale))
 
-            scaled_surf = pygame.transform.scale(obj, (width, height))
+            scaled_surf = pygame.transform.scale(obj.surface, (width, height))
 
-            self._objects[scaled_surf] = point
+            self.objects[name] = GridObject(scaled_surf, obj.point)
 
     def _render_objects(self):
         # self._scale_objects()
 
-        for obj, point in self._objects.items():
-            rect = obj.get_rect(
-                centerx=self.current_x + point.x * self.cell_size / self.number_scale[0],
-                centery=self.current_y - point.y * self.cell_size / self.number_scale[1]
+        for obj in self.objects.values():
+            rect = obj.surface.get_rect(
+                centerx=self.current_x + obj.point.x * self.cell_size / self.number_scale[0],
+                centery=self.current_y - obj.point.y * self.cell_size / self.number_scale[1]
             )
             if rect.colliderect(self.surface.get_rect()):
-                self.surface.blit(obj, rect)
+                self.surface.blit(obj.surface, rect)
+
+    def draw_line(self, p0: pygame.Vector2, p1: pygame.Vector2, w: float, color: pygame.Color):
+        pygame.draw.line(
+            self.surface, color,
+            (
+                self.current_x + p0.x * self.cell_size / self.number_scale[0],
+                self.current_y - p0.y * self.cell_size / self.number_scale[1]
+            ),
+            (
+                self.current_x + p1.x * self.cell_size / self.number_scale[0],
+                self.current_y - p1.y * self.cell_size / self.number_scale[1]
+            ), w
+        )
 
     def render(self):
         self.surface.fill(GRAY)
@@ -85,8 +105,12 @@ class Grid:
         x = self.current_x // self.cell_size
         y = self.current_y // self.cell_size
 
-        x_pos = int(self.current_x) - x * self.cell_size + self.cell_size * 3
-        self.new_vert_line(x_pos, 7)
+        # x_pos = int(self.current_x) - x * self.cell_size + self.cell_size * 3
+        # self.new_vert_line(x_pos, 7)
+
+        for p0, p1, w, color in self._lines:
+            self.draw_line(p0, p1, w, color)
+
         # draw vertical lines
         for _ in range(-3, self.xnlines - 3):
             x_pos = int(self.current_x) - x * self.cell_size + self.cell_size * _
@@ -149,10 +173,17 @@ class Grid:
         elif event.type == pygame.VIDEORESIZE:
             self.scaled = True
 
-    def add_object(self, obj: pygame.Surface, point: pygame.Vector2):
-        self._original_objects[obj] = point
-        self._objects = self._original_objects.copy()
+    def add_object(self, obj: pygame.Surface, point: pygame.Vector2, name: str):
+        self._original_objects[name] = GridObject(obj, point)
+        self.objects = self._original_objects.copy()
 
+    def add_line(self, p0: pygame.Vector2, p1: pygame.Vector2, w: float, color: pygame.Color):
+        self._lines.append((p0, p1, w, color))
+
+    def add_circle(self, point: pygame.Vector2, radius: float, color: pygame.Color, name: str):
+        circle = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(circle, color, (radius, radius), radius)
+        self.add_object(circle, point, name)
 
 BLACK = (0, 0, 0)
 GRAY = (136, 136, 136)

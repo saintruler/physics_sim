@@ -58,12 +58,12 @@ while True:
 
     t += 0.1
 
-    print(grid._objects[circle])
+    print(grid.objects[circle])
     if t != 0 and p.y < 0:
-        grid._objects[circle] = (grid._objects[circle][0], -1)
+        grid.objects[circle] = (grid.objects[circle][0], -1)
         p.y = -1
     else:
-        grid._objects[circle] = (px(t), py(t))
+        grid.objects[circle] = (px(t), py(t))
         p.x = px(t)
         p.y = py(t)
 
