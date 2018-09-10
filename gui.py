@@ -2,10 +2,6 @@ import pygame
 from pygame import Color
 
 
-def load_image(path):
-    return pygame.image.load(path).convert_alpha()
-
-
 class Label:
     def __init__(self, rect, text, font_color, name):
         self.rect = pygame.Rect(rect)
@@ -144,112 +140,6 @@ class TextBox:
             )
 
         surface.blit(surf, self.rect)
-
-
-class Checkbox:
-    def __init__(self, name, rect: pygame.Rect, value=False, func=(lambda val, *args: None), *args):
-        self.name = name
-        self.args = args
-
-        self.rect = rect
-
-        self.func = func
-        self.value = value
-
-        self.states = {
-            'hovered': False,
-            'clicked': False
-        }
-
-        self.images = {
-            'normal': {
-                True: self.normal_checked(),
-                False: self.normal_unchecked()
-            },
-            'hovered': {
-                True: self.hovered_checked(),
-                False: self.hovered_unchecked()
-            }
-        }
-
-        self.image = self.images['normal'][value]
-
-    def normal_unchecked(self):
-        surf = pygame.Surface(self.rect.size)
-        surf.fill(Color('white'))
-        pygame.draw.rect(surf, Color('black'), (0, 0, *self.rect.size), 3)
-        return surf
-
-    def normal_checked(self):
-        surf = self.normal_unchecked()
-        pygame.draw.line(surf, Color('black'), (0, 0), self.rect.size, 3)
-        pygame.draw.line(surf, Color('black'), (0, self.rect.height), (self.rect.width, 0), 3)
-        return surf
-
-    def hovered_unchecked(self):
-        surf = pygame.Surface(self.rect.size)
-        surf.fill(Color('lightgray'))
-        pygame.draw.rect(surf, Color('black'), (0, 0, *self.rect.size), 3)
-        return surf
-
-    def hovered_checked(self):
-        surf = self.hovered_unchecked()
-        pygame.draw.line(surf, Color('black'), (0, 0), self.rect.size, 3)
-        pygame.draw.line(surf, Color('black'), (0, self.rect.height), (self.rect.width, 0), 3)
-        return surf
-
-    def update(self):
-        if self.states['hovered']:
-            self.image = self.images['hovered'][self.value]
-        else:
-            self.image = self.images['normal'][self.value]
-
-    def render(self, surface):
-        surface.blit(self.image, self.rect)
-
-    def apply_event(self, event):
-        self.states['hovered'] = self.rect.collidepoint(*pygame.mouse.get_pos())
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if self.states['hovered']:
-                    self.states['clicked'] = True
-
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                if self.states['hovered'] and self.states['clicked']:
-                    self.value = not self.value
-                    self.states['clicked'] = False
-                    self.func(self.value, *self.args)
-
-
-class CheckboxWithText(Checkbox):
-    def __init__(self, name, pos, image_states, text, font_path, text_color, text_size,
-                 value=False, func=lambda val, *args: None, *args):
-        super().__init__(name, pos, image_states, value, func, *args)
-        self.font = pygame.font.Font(font_path, text_size)
-        self.text_color = pygame.Color(text_color)
-        self.text = text
-
-        self.text_surf = self.font.render(self.text, 1, self.text_color)
-        self.rect = pygame.Rect(0, 0,
-                                self.text_surf.get_width() + self.image.get_width(),
-                                self.text_surf.get_height(),
-                                )
-        self.rect.center = self.pos
-
-    def update(self):
-        super().update()
-        self.text_surf = self.font.render(self.text, 1, self.text_color)
-        self.rect = pygame.Rect(0, 0,
-                                self.text_surf.get_width() + self.image.get_width(),
-                                self.text_surf.get_height(),
-                                )
-        self.rect.center = self.pos
-
-    def render(self, surface):
-        surface.blit(self.text_surf, self.text_surf.get_rect(left=self.rect.left, centery=self.pos[1]))
-        surface.blit(self.image, self.image.get_rect(right=self.rect.right, centery=self.pos[1]))
 
 
 class Button:

@@ -1,6 +1,7 @@
 from pygame.math import Vector2
 from math import cos, sin, radians
 
+
 class Physics:
     def __init__(self, angle: float, v0: float, deltatime: float=1, g: float=9.81, p0: Vector2=Vector2()):
         self.angle = angle
