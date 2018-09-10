@@ -38,6 +38,7 @@ class TextBox:
 
         self.name = name
         self.callback = callback
+        self.error = False
 
     def apply_event(self, event):
         if event.type == pygame.KEYDOWN and self.active:
@@ -65,6 +66,9 @@ class TextBox:
                 if self.font.render(self.text + event.unicode, 1, self.font_color).get_rect().w < self.rect.w:
                     self.text = self.text[:self.caret] + event.unicode + self.text[self.caret:]
                     self.caret += 1
+
+            self.error = False
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 self.active = self.rect.collidepoint(event.pos)
@@ -110,7 +114,12 @@ class TextBox:
         )
 
     def render_text(self, surface):
-        color = self.font_color if self.text else Color('gray')
+        if self.text:
+            color = self.font_color
+        elif self.error:
+            color = self.font_color
+        else:
+            color = Color('gray')
         text = self.text if self.text or self.active else self.default_text
         self.rendered_text = self.font.render(text, 1, color)
         self.rendered_rect = self.rendered_text.get_rect(x=4, centery=self.rect.h // 2)
@@ -118,7 +127,10 @@ class TextBox:
 
     def render(self, surface):
         surf = pygame.Surface(self.rect.size)
-        surf.fill(Color('white'))
+        if self.error:
+            surf.fill(Color('#FF7167'))
+        else:
+            surf.fill(Color('white'))
 
         self.render_frame(surf)
         self.render_text(surf)

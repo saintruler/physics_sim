@@ -35,7 +35,7 @@ class Physics:
     def set_p0(self, p0: Vector2):
         self.p0 = p0
 
-    def update(self, fps=1):
+    def update(self):
         self.t += self.deltatime
 
     def reset(self):
