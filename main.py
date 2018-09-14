@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 pygame.init()
 
 w, h = size = 800, 600
+pygame.display.set_caption('Physical simulation')
 screen = pygame.display.set_mode(size)
 BLACK = Color('black')
 WHITE = Color('white')
@@ -21,30 +22,30 @@ BACKGROUND = Color(192, 150, 90)
 
 gui = GUI()
 
-gui.add_element(Label((w - 250, 48, 0, 40), 'V0 =', Color('black'), 'v0_label'))
-gui.add_element(Label((w - 57, 48, 0, 40), 'м/c', Color('black'), 'v0_label_units'))
-gui.add_element(TextBox((w - 190, 40, 130, 40), '0.0', name='v0_textbox'))
+gui.add_element(Label((w - 255, 40, 0, 35), 'V0=', Color('black'), 'v0_label'))
+gui.add_element(Label((w - 57, 43, 0, 30), 'м/c', Color('black'), 'v0_label_units'))
+gui.add_element(TextBox((w - 190, 40, 130, 35), '0.0', name='v0_textbox'))
 
-gui.add_element(Label((w - 237, 108, 0, 40), 'α =', Color('black'), 'angle_label'))
-gui.add_element(Label((w - 57, 108, 0, 40), '°', Color('black'), 'angle_label_units'))
-gui.add_element(TextBox((w - 190, 100, 130, 40), '0.0', name='angle_textbox'))
+gui.add_element(Label((w - 236, 100, 0, 35), 'α=', Color('black'), 'angle_label'))
+gui.add_element(Label((w - 57, 100, 0, 35), '°', Color('black'), 'angle_label_units'))
+gui.add_element(TextBox((w - 190, 100, 130, 35), '0.0', name='angle_textbox'))
 
-gui.add_element(Label((w - 247, 168, 0, 40), 'Δt =', Color('black'), 'delta_label'))
-gui.add_element(Label((w - 57, 168, 0, 40), 'с', Color('black'), 'delta_label_units'))
-gui.add_element(TextBox((w - 190, 160, 130, 40), '1.0', name='delta_textbox'))
+gui.add_element(Label((w - 255, 160, 0, 35), 'Δt=', Color('black'), 'delta_label'))
+gui.add_element(Label((w - 57, 160, 0, 35), 'с', Color('black'), 'delta_label_units'))
+gui.add_element(TextBox((w - 190, 160, 130, 35), '1.0', name='delta_textbox'))
 
-gui.add_element(Label((w - 247, 228, 0, 40), 'Начальная точка:', Color('black'), 'p0_label'))
-gui.add_element(Label((w - 235, 268, 0, 40), 'x =', Color('black'), 'p0x_label'))
-gui.add_element(Label((w - 235, 308, 0, 40), 'y =', Color('black'), 'p0y_label'))
-gui.add_element(TextBox((w - 190, 264, 130, 35), '0.0', name='p0x_textbox'))
-gui.add_element(TextBox((w - 190, 304, 130, 35), '0.0', name='p0y_textbox'))
+gui.add_element(Label((w - 255, 220, 0, 28), 'Начальная точка:', Color('black'), 'p0_label'))
+gui.add_element(Label((w - 235, 255, 0, 35), 'x=', Color('black'), 'p0x_label'))
+gui.add_element(Label((w - 235, 295, 0, 35), 'y=', Color('black'), 'p0y_label'))
+gui.add_element(TextBox((w - 190, 255, 130, 35), '0.0', name='p0x_textbox'))
+gui.add_element(TextBox((w - 190, 295, 130, 35), '0.0', name='p0y_textbox'))
 
 
-gui.add_element(Label((w - 247, 348, 0, 40), 'Масштаб клетки:', Color('black'), 'scale_label'))
-gui.add_element(Label((w - 235, 388, 0, 40), 'x =', Color('black'), 'scaleX_label'))
-gui.add_element(Label((w - 235, 428, 0, 40), 'y =', Color('black'), 'scaleY_label'))
-gui.add_element(TextBox((w - 190, 384, 130, 35), '50', name='scaleX_textbox'))
-gui.add_element(TextBox((w - 190, 424, 130, 35), '50', name='scaleY_textbox'))
+gui.add_element(Label((w - 255, 360, 0, 28), 'Масштаб клетки:', Color('black'), 'scale_label'))
+gui.add_element(Label((w - 235, 395, 0, 35), 'x=', Color('black'), 'scaleX_label'))
+gui.add_element(Label((w - 235, 435, 0, 35), 'y=', Color('black'), 'scaleY_label'))
+gui.add_element(TextBox((w - 190, 395, 130, 35), '50', name='scaleX_textbox'))
+gui.add_element(TextBox((w - 190, 435, 130, 35), '50', name='scaleY_textbox'))
 
 
 def setup():

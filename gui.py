@@ -9,7 +9,7 @@ class Label:
         self.font_color = font_color
         self.name = name
 
-        self.font = pygame.font.Font(None, self.rect.h - 4)
+        self.font = pygame.font.SysFont('couriernew', self.rect.h - 4, True)
 
     def render(self, surface):
         rendered_text = self.font.render(self.text, 1, self.font_color)
